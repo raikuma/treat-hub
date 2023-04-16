@@ -10,12 +10,14 @@ const io = new Server(server);
 const {
     RandomGeneratorDevice,
     CounterDevice,
+    PostItDevice
 } = require('./devices');
 
 const devices = [];
 const device_types = {
     'random-generator': RandomGeneratorDevice,
     'counter': CounterDevice,
+    'post-it': PostItDevice,
 };
 
 function saveDevices() {

@@ -56,7 +56,39 @@ class CounterDevice {
     }
 }
 
+class PostItDevice {
+    constructor(device) {
+        this.id = device.id || uuidv4();
+        this.name = 'Post It';
+        this.type = 'post-it';
+        this.text = device.text || '';
+    }
+
+    config() {
+        return {
+            id: this.id,
+            name: this.name,
+            type: this.type,
+            text: this.text,
+        };
+    }
+
+    status() {
+        return {
+            id: this.id,
+            name: this.name,
+            type: this.type,
+            text: this.text,
+        };
+    }
+
+    update(status) {
+        this.text = status.text;
+    }
+}
+
 module.exports = {
     RandomGeneratorDevice,
     CounterDevice,
+    PostItDevice,
 };
