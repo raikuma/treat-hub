@@ -51,7 +51,11 @@ class CounterDevice {
         };
     }
 
-    update() {
+    update(status) {
+        if (status.count !== undefined) {
+            this.count = status.count;
+            return;
+        }
         this.count += 1;
     }
 }
@@ -87,8 +91,42 @@ class PostItDevice {
     }
 }
 
+class ImageViewerDevice {
+    constructor(device) {
+        this.id = device.id || uuidv4();
+        this.name = 'Image Viewer';
+        this.type = 'image-viewer';
+        this.image = device.image || '';
+    }
+
+    config() {
+        return {
+            id: this.id,
+            name: this.name,
+            type: this.type,
+            image: this.image,
+        };
+    }
+
+    status() {
+        return {
+            id: this.id,
+            name: this.name,
+            type: this.type,
+            image: this.image,
+        };
+    }
+    
+    update(status) {
+        this.image = status.image;
+    }
+}
+
 module.exports = {
-    RandomGeneratorDevice,
-    CounterDevice,
-    PostItDevice,
+    deviceClasses: {
+        'random-generator': RandomGeneratorDevice,
+        'counter': CounterDevice,
+        'post-it': PostItDevice,
+        'image-viewer': ImageViewerDevice,
+    }
 };

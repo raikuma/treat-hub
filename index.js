@@ -7,18 +7,9 @@ const server = http.createServer(app);
 const { Server } = require('socket.io');
 const io = new Server(server);
 
-const {
-    RandomGeneratorDevice,
-    CounterDevice,
-    PostItDevice
-} = require('./devices');
+const { deviceClasses } = require('./devices');
 
 const devices = [];
-const device_types = {
-    'random-generator': RandomGeneratorDevice,
-    'counter': CounterDevice,
-    'post-it': PostItDevice,
-};
 
 function saveDevices() {
     console.log('Saving devices');
@@ -32,7 +23,7 @@ function loadDevices() {
         const data = fs.readFileSync('devices.json');
         const loadedDevices = JSON.parse(data);
         loadedDevices.forEach((device) => {
-            const DeviceClass = device_types[device.type];
+            const DeviceClass = deviceClasses[device.type];
             if (DeviceClass) {
                 devices.push(new DeviceClass(device));
             }
@@ -58,8 +49,9 @@ app.get('/api/ping', (req, res) => {
 
 app.post('/api/add', (req, res) => {
     const { type } = req.body;
-    if (type in device_types) {
-        devices.push(new device_types[type]({}));
+    DeviceClass = deviceClasses[type];
+    if (DeviceClass) {
+        devices.push(new DeviceClass(req.body));
     } else {
         res.status(400).send('Invalid type');
         return;
