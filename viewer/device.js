@@ -78,7 +78,7 @@ function parseValueMonitor(status) {
     html = `<h3>source: ${status.source}</h3>`;
     html += `<h3>value: ${status.value}</h3>`
     html += `<input id="input-${status.id}" value="${status.source}">`;
-    html += `<button onclick="refreshMonitor('${status.id}')">Refresh</button>`
+    html += `<button onclick="refreshDevice('${status.id}')">Refresh</button>`
     html += `<button onclick="updateValueMonitor('${status.id}')">Update</button>`;
     return html;
 }
@@ -90,12 +90,5 @@ function updateValueMonitor(deviceId) {
         source: source,
     }, () => {
         refreshDevice(deviceId);
-    });
-}
-
-function refreshMonitor(deviceId) {
-    const source = document.querySelector('#input-' + deviceId).value;
-    apiFetchValue(source, (value) => {
-        document.querySelector('#value-' + deviceId).innerHTML = value;
     });
 }
