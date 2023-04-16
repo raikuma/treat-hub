@@ -76,13 +76,10 @@ function updateImageViewer(deviceId) {
 
 function parseValueMonitor(status) {
     html = `<h3>source: ${status.source}</h3>`;
-    html += `<h3>value: <span id="value-${status.id}"></span></h3>`
+    html += `<h3>value: ${status.value}</h3>`
     html += `<input id="input-${status.id}" value="${status.source}">`;
     html += `<button onclick="refreshMonitor('${status.id}')">Refresh</button>`
     html += `<button onclick="updateValueMonitor('${status.id}')">Update</button>`;
-    apiFetchValue(status.source, (value) => {
-        document.querySelector('#value-' + status.id).innerHTML = value;
-    });
     return html;
 }
 

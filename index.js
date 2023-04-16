@@ -87,7 +87,7 @@ app.get('/api/status/:id', (req, res) => {
     const { id } = req.params;
     const device = devices.find((device) => device.id === id);
     if (device) {
-        res.send(device.status());
+        res.send(device.status(devices));
     } else {
         res.status(404).send('Not found');
     }

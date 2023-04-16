@@ -139,12 +139,24 @@ class ValueMonitorDevice {
         };
     }
 
-    status() {
+    status(devices) {
+        const tokens = this.source.split('.');
+        let value;
+        try {
+            const deviceId = tokens[0];
+            const device = devices.find(d => d.id === deviceId);
+            for (let i = 1; i < tokens.length; i++) {
+                value = device[tokens[i]];
+            }
+        } catch (e) {
+            value = undefined;
+        }
         return {
             id: this.id,
             name: this.name,
             type: this.type,
             source: this.source,
+            value: value,
         };
     }
 
