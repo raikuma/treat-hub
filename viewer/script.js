@@ -43,6 +43,7 @@ function parseDeviceStatus(status) {
     const domId = 'device-' + status.id;
     let html = `<div class="device" id="${domId}">`;
     html += `<h2>${status.name}</h2>`;
+    html += `<h3>id: ${status.id}</h3>`;
     if (status.type in parsers)
     {
         html += parsers[status.type](status);

@@ -122,11 +122,43 @@ class ImageViewerDevice {
     }
 }
 
+class ValueMonitorDevice {
+    constructor(device) {
+        this.id = device.id || uuidv4();
+        this.name = 'Value Monitor';
+        this.type = 'value-monitor';
+        this.source = device.source || '';
+    }
+
+    config() {
+        return {
+            id: this.id,
+            name: this.name,
+            type: this.type,
+            source: this.source,
+        };
+    }
+
+    status() {
+        return {
+            id: this.id,
+            name: this.name,
+            type: this.type,
+            source: this.source,
+        };
+    }
+
+    update(status) {
+        this.source = status.source;
+    }
+}
+
 module.exports = {
     deviceClasses: {
         'random-generator': RandomGeneratorDevice,
         'counter': CounterDevice,
         'post-it': PostItDevice,
         'image-viewer': ImageViewerDevice,
+        'value-monitor': ValueMonitorDevice,
     }
 };

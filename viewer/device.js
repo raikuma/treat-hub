@@ -3,6 +3,7 @@ var parsers = {
     'random-generator': parseRandomGenerator,
     'post-it': parsePostIt,
     'image-viewer': parseImageViewer,
+    'value-monitor': parseValueMonitor,
 };
 
 function parseCounter(status) {
@@ -70,5 +71,34 @@ function updateImageViewer(deviceId) {
         image: image,
     }, () => {
         refreshDevice(deviceId);
+    });
+}
+
+function parseValueMonitor(status) {
+    html = `<h3>source: ${status.source}</h3>`;
+    html += `<h3>value: <span id="value-${status.id}"></span></h3>`
+    html += `<input id="input-${status.id}" value="${status.source}">`;
+    html += `<button onclick="refreshMonitor('${status.id}')">Refresh</button>`
+    html += `<button onclick="updateValueMonitor('${status.id}')">Update</button>`;
+    apiFetchValue(status.source, (value) => {
+        document.querySelector('#value-' + status.id).innerHTML = value;
+    });
+    return html;
+}
+
+function updateValueMonitor(deviceId) {
+    const source = document.querySelector('#input-' + deviceId).value;
+    apiUpdateDeviceStatus({
+        id: deviceId,
+        source: source,
+    }, () => {
+        refreshDevice(deviceId);
+    });
+}
+
+function refreshMonitor(deviceId) {
+    const source = document.querySelector('#input-' + deviceId).value;
+    apiFetchValue(source, (value) => {
+        document.querySelector('#value-' + deviceId).innerHTML = value;
     });
 }

@@ -57,3 +57,24 @@ function apiRemoveDevice(deviceId, callback) {
             console.log(error);
         });
 }
+
+function apiFetchValue(source, callback) {
+    const deviceId = source.split('.')[0];
+    axios.get('http://localhost:3000/api/status/' + deviceId)
+        .then(function(response) {
+            let data = response.data;
+            const keys = source.split('.');
+            for (let i = 1; i < keys.length; i++) {
+                try {
+                    data = data[keys[i]];
+                } catch (e) {
+                    console.log(e);
+                    return;
+                }
+            }
+            callback(data);
+        })
+        .catch(function(error) {
+            console.log(error);
+        });
+}
