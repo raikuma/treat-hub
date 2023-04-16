@@ -1,6 +1,12 @@
+const fs = require('fs');
+const path = require('path');
 const express = require('express');
 const app = express();
-const fs = require('fs');
+const http = require('http');
+const server = http.createServer(app);
+const { Server } = require('socket.io');
+const io = new Server(server);
+
 const {
     RandomGeneratorDevice,
     CounterDevice,
@@ -38,9 +44,10 @@ function loadDevices() {
 loadDevices();
 
 app.use(express.json());
+app.use('/viewer', express.static(path.join(__dirname, 'viewer')));
 
 app.get('/', (req, res) => {
-    res.send('Hello World!');
+    res.redirect('/viewer');
 });
 
 app.get('/api/ping', (req, res) => {
@@ -105,6 +112,13 @@ app.post('/api/update', (req, res) => {
     }
 });
 
-app.listen(3000, () => {
+io.on('connection', (socket) => {
+    console.log('a user connected');
+    socket.on('disconnect', () => {
+        console.log('user disconnected');
+    });
+});
+
+server.listen(3000, () => {
     console.log('App listening on port 3000');
 });
