@@ -165,6 +165,81 @@ class ValueMonitorDevice {
     }
 }
 
+class CronCurlDevice {
+    constructor(device) {
+        this.id = device.id || uuidv4();
+        this.name = 'Cron Curl';
+        this.type = 'cron-curl';
+        this.interval = device.interval || 10;
+        this.url = device.url || '';
+        this.method = device.method || 'GET';
+        this.result = '';
+
+        this.timer = null;
+        this.start();
+    }
+
+    config() {
+        return {
+            id: this.id,
+            name: this.name,
+            type: this.type,
+            interval: this.interval,
+            url: this.url,
+            method: this.method,
+        };
+    }
+
+    status() {
+        return {
+            id: this.id,
+            name: this.name,
+            type: this.type,
+            interval: this.interval,
+            url: this.url,
+            method: this.method,
+            result: this.result,
+        };
+    }
+
+    update(status) {
+        this.interval = status.interval;
+        this.url = status.url;
+        this.method = status.method;
+
+        this.stop();
+        this.start();
+    }
+
+    start() {
+        console.log('start')
+        this.timer = setInterval(() => {
+            this.fetch();
+        }, this.interval * 1000);
+    }
+
+    stop() {
+        console.log('stop')
+        clearInterval(this.timer);
+    }
+
+    async fetch() {
+        try {
+            const response = await fetch(this.url, {
+                method: this.method,
+            });
+            const text = await response.text();
+            this.result = text;
+        } catch (e) {
+            this.result = e.message;
+        }
+    }
+
+    remove() {
+        this.stop();
+    }
+}
+
 module.exports = {
     deviceClasses: {
         'random-generator': RandomGeneratorDevice,
@@ -172,5 +247,6 @@ module.exports = {
         'post-it': PostItDevice,
         'image-viewer': ImageViewerDevice,
         'value-monitor': ValueMonitorDevice,
+        'cron-curl': CronCurlDevice,
     }
 };

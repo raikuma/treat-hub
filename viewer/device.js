@@ -4,6 +4,7 @@ var parsers = {
     'post-it': parsePostIt,
     'image-viewer': parseImageViewer,
     'value-monitor': parseValueMonitor,
+    'cron-curl': parseCronCurl,
 };
 
 function parseCounter(status) {
@@ -88,6 +89,33 @@ function updateValueMonitor(deviceId) {
     apiUpdateDeviceStatus({
         id: deviceId,
         source: source,
+    }, () => {
+        refreshDevice(deviceId);
+    });
+}
+
+
+function parseCronCurl(status) {
+    html = `<h3>url: ${status.url}</h3>`;
+    html += `<h3>method: ${status.method}</h3>`
+    html += `<h3>interval: ${status.interval}</h3>`
+    html += `<h3>result: ${status.result}</h3>`
+    html += `<input id="url-${status.id}" value="${status.url}">`;
+    html += `<input id="method-${status.id}" value="${status.method}">`;
+    html += `<input id="interval-${status.id}" value="${status.interval}">`;
+    html += `<button onclick="updateCronCurl('${status.id}')">Update</button>`;
+    return html;
+}
+
+function updateCronCurl(deviceId) {
+    const url = document.querySelector('#url-' + deviceId).value;
+    const method = document.querySelector('#method-' + deviceId).value;
+    const interval = document.querySelector('#interval-' + deviceId).value;
+    apiUpdateDeviceStatus({
+        id: deviceId,
+        url: url,
+        method: method,
+        interval: interval,
     }, () => {
         refreshDevice(deviceId);
     });

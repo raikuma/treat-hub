@@ -76,7 +76,8 @@ app.post('/api/remove', (req, res) => {
     const { id } = req.body;
     const index = devices.findIndex((device) => device.id === id);
     if (index !== -1) {
-        devices.splice(index, 1);
+        const device = devices.splice(index, 1)[0];
+        device.remove?.();
         saveDevices();
         console.log('Removed device', id)
     }
