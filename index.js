@@ -98,7 +98,7 @@ app.post('/api/update', (req, res) => {
     const { id } = req.body;
     const device = devices.find((device) => device.id === id);
     if (device) {
-        device.update(req.body);
+        device.update?.(req.body);
         saveDevices();
         console.log('Updated device', device.config())
         res.send('ok');

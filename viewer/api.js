@@ -1,59 +1,55 @@
-function apiFetchDeviceList(callback) {
-    axios.get('http://localhost:3000/api/list')
+function apiRequest({url, method, data}, callback) {
+    axios({
+        url: url,
+        method: method,
+        data: data,
+    })
         .then(function(response) {
             callback(response.data);
         })
         .catch(function(error) {
             console.log(error);
-        }
-    );
+        });
+}
+
+function apiFetchDeviceList(callback) {
+    apiRequest({
+        url: '/api/list',
+        method: 'get',
+    }, callback);
 }
 
 function apiFetchDeviceStatus(deviceId, callback) {
-    axios.get('http://localhost:3000/api/status/' + deviceId)
-        .then(function(response) {
-            callback(response.data);
-        })
-        .catch(function(error) {
-            console.log(error);
-        });
+    apiRequest({
+        url: '/api/status/' + deviceId,
+        method: 'get',
+    }, callback);
 }
 
 function apiUpdateDeviceStatus(status, callback) {
-    axios.post('http://localhost:3000/api/update', 
-        status
-    )
-        .then(function(response) {
-            console.log(response);
-            callback();
-        })
-        .catch(function(error) {
-            console.log(error);
-        });
+    apiRequest({
+        url: '/api/update',
+        method: 'post',
+        data: status,
+    }, callback);
 }
 
 function apiAddDevice(deviceType, callback) {
-    axios.post('http://localhost:3000/api/add', {
-        type: deviceType,
-    })
-        .then(function(response) {
-            console.log(response);
-            callback();
-        })
-        .catch(function(error) {
-            console.log(error);
-        });
+    apiRequest({
+        url: '/api/add',
+        method: 'post',
+        data: {
+            type: deviceType,
+        },
+    }, callback);
 }
 
 function apiRemoveDevice(deviceId, callback) {
-    axios.post('http://localhost:3000/api/remove', {
-        id: deviceId,
-    })
-        .then(function(response) {
-            console.log(response);
-            callback();
-        })
-        .catch(function(error) {
-            console.log(error);
-        });
+    apiRequest({
+        url: '/api/remove',
+        method: 'post',
+        data: {
+            id: deviceId,
+        },
+    }, callback);
 }
