@@ -100,7 +100,7 @@ app.post('/api/update', (req, res) => {
     if (device) {
         device.update(req.body);
         saveDevices();
-        console.log('Updated device', device)
+        console.log('Updated device', device.config())
         res.send('ok');
     } else {
         res.status(404).send('Not found');
