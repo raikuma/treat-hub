@@ -1,10 +1,10 @@
 const { v4: uuidv4 } = require('uuid');
 
-class RandomGeneratorDevice {
+class Device {
     constructor(device) {
         this.id = device.id || uuidv4();
-        this.name = 'Random Generator';
-        this.type = 'random-generator';
+        this.name = 'Device';
+        this.type = 'device';
     }
 
     config() {
@@ -20,14 +20,34 @@ class RandomGeneratorDevice {
             id: this.id,
             name: this.name,
             type: this.type,
+        };
+    }
+
+    update() {
+    }
+
+    remove() {
+    }
+}
+
+class RandomGeneratorDevice extends Device {
+    constructor(device) {
+        super(device);
+        this.name = 'Random Generator';
+        this.type = 'random-generator';
+    }
+
+    status() {
+        return {
+            ...super.status(),
             random: Math.random(),
         };
     }
 }
 
-class CounterDevice {
+class CounterDevice extends Device {
     constructor(device) {
-        this.id = device.id || uuidv4();
+        super(device);
         this.name = 'Counter';
         this.type = 'counter';
         this.count = device.count || 0;
@@ -35,18 +55,14 @@ class CounterDevice {
 
     config() {
         return {
-            id: this.id,
-            name: this.name,
-            type: this.type,
+            ...super.config(),
             count: this.count,
         };
     }
 
     status() {
         return {
-            id: this.id,
-            name: this.name,
-            type: this.type,
+            ...super.status(),
             count: this.count,
         };
     }
@@ -60,9 +76,9 @@ class CounterDevice {
     }
 }
 
-class PostItDevice {
+class PostItDevice extends Device {
     constructor(device) {
-        this.id = device.id || uuidv4();
+        super(device);
         this.name = 'Post It';
         this.type = 'post-it';
         this.text = device.text || '';
@@ -70,18 +86,14 @@ class PostItDevice {
 
     config() {
         return {
-            id: this.id,
-            name: this.name,
-            type: this.type,
+            ...super.config(),
             text: this.text,
         };
     }
 
     status() {
         return {
-            id: this.id,
-            name: this.name,
-            type: this.type,
+            ...super.status(),
             text: this.text,
         };
     }
@@ -91,9 +103,9 @@ class PostItDevice {
     }
 }
 
-class ImageViewerDevice {
+class ImageViewerDevice extends Device {
     constructor(device) {
-        this.id = device.id || uuidv4();
+        super(device);
         this.name = 'Image Viewer';
         this.type = 'image-viewer';
         this.image = device.image || '';
@@ -101,18 +113,14 @@ class ImageViewerDevice {
 
     config() {
         return {
-            id: this.id,
-            name: this.name,
-            type: this.type,
+            ...super.config(),
             image: this.image,
         };
     }
 
     status() {
         return {
-            id: this.id,
-            name: this.name,
-            type: this.type,
+            ...super.status(),
             image: this.image,
         };
     }
@@ -122,9 +130,9 @@ class ImageViewerDevice {
     }
 }
 
-class ValueMonitorDevice {
+class ValueMonitorDevice extends Device {
     constructor(device) {
-        this.id = device.id || uuidv4();
+        super(device)
         this.name = 'Value Monitor';
         this.type = 'value-monitor';
         this.source = device.source || '';
@@ -132,9 +140,7 @@ class ValueMonitorDevice {
 
     config() {
         return {
-            id: this.id,
-            name: this.name,
-            type: this.type,
+            ...super.config(),
             source: this.source,
         };
     }
@@ -152,9 +158,7 @@ class ValueMonitorDevice {
             value = undefined;
         }
         return {
-            id: this.id,
-            name: this.name,
-            type: this.type,
+            ...super.status(),
             source: this.source,
             value: value,
         };
@@ -165,9 +169,9 @@ class ValueMonitorDevice {
     }
 }
 
-class CronCurlDevice {
+class CronCurlDevice extends Device {
     constructor(device) {
-        this.id = device.id || uuidv4();
+        super(device);
         this.name = 'Cron Curl';
         this.type = 'cron-curl';
         this.interval = device.interval || 10;
@@ -181,9 +185,6 @@ class CronCurlDevice {
 
     config() {
         return {
-            id: this.id,
-            name: this.name,
-            type: this.type,
             interval: this.interval,
             url: this.url,
             method: this.method,
@@ -192,9 +193,7 @@ class CronCurlDevice {
 
     status() {
         return {
-            id: this.id,
-            name: this.name,
-            type: this.type,
+            ...super.status(),
             interval: this.interval,
             url: this.url,
             method: this.method,

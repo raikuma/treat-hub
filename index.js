@@ -11,6 +11,8 @@ const { deviceClasses } = require('./devices');
 
 const devices = [];
 
+PORT = process.env.PORT || 3000;
+
 function saveDevices() {
     console.log('Saving devices');
     const data = devices.map((device) => device.config());
@@ -114,6 +116,6 @@ io.on('connection', (socket) => {
     });
 });
 
-server.listen(3000, () => {
-    console.log('App listening on port 3000');
+server.listen(PORT, () => {
+    console.log('App listening on port ' + PORT);
 });
