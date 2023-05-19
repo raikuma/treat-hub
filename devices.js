@@ -2,11 +2,19 @@ const { v4: uuidv4 } = require('uuid');
 
 class Device {
     constructor(device) {
+        if (this.constructor === Device) {
+            throw new Error('Abstract class "Device" cannot be instantiated directly.');
+        }
+        device = device || {};
         this.id = device.id || uuidv4();
-        this.name = 'Device';
-        this.type = 'device';
+        this.name = device.name || this.constructor.defaultName || 'Device';
+        if (this.constructor.type === undefined) {
+            throw new Error('Device type is not defined.');
+        }
+        this.type = this.constructor.type;
     }
 
+    // Device congifuration which needs when restoring device
     config() {
         return {
             id: this.id,
@@ -23,19 +31,16 @@ class Device {
         };
     }
 
-    update() {
-    }
+    // Can update config or status
+    update() { }
 
-    remove() {
-    }
+    // Called when device is removed
+    remove() { }
 }
 
 class RandomGeneratorDevice extends Device {
-    constructor(device) {
-        super(device);
-        this.name = 'Random Generator';
-        this.type = 'random-generator';
-    }
+    static type = 'random-generator';
+    static defaultName = 'Random Generator';
 
     status() {
         return {
@@ -46,10 +51,11 @@ class RandomGeneratorDevice extends Device {
 }
 
 class CounterDevice extends Device {
+    static type = 'counter';
+    static defaultName = 'Counter';
+
     constructor(device) {
         super(device);
-        this.name = 'Counter';
-        this.type = 'counter';
         this.count = device.count || 0;
     }
 
@@ -77,10 +83,11 @@ class CounterDevice extends Device {
 }
 
 class PostItDevice extends Device {
+    static type = 'post-it';
+    static defaultName = 'Post It';
+
     constructor(device) {
         super(device);
-        this.name = 'Post It';
-        this.type = 'post-it';
         this.text = device.text || '';
     }
 
@@ -104,10 +111,11 @@ class PostItDevice extends Device {
 }
 
 class ImageViewerDevice extends Device {
+    static type = 'image-viewer';
+    static defaultName = 'Image Viewer';
+
     constructor(device) {
         super(device);
-        this.name = 'Image Viewer';
-        this.type = 'image-viewer';
         this.image = device.image || '';
     }
 
@@ -131,10 +139,11 @@ class ImageViewerDevice extends Device {
 }
 
 class ValueMonitorDevice extends Device {
+    static type = 'value-monitor';
+    static defaultName = 'Value Monitor';
+
     constructor(device) {
         super(device)
-        this.name = 'Value Monitor';
-        this.type = 'value-monitor';
         this.source = device.source || '';
     }
 
@@ -170,10 +179,11 @@ class ValueMonitorDevice extends Device {
 }
 
 class CronCurlDevice extends Device {
+    static type = 'cron-curl';
+    static defaultName = 'Cron Curl';
+
     constructor(device) {
         super(device);
-        this.name = 'Cron Curl';
-        this.type = 'cron-curl';
         this.interval = device.interval || 10;
         this.url = device.url || '';
         this.method = device.method || 'GET';
@@ -185,6 +195,7 @@ class CronCurlDevice extends Device {
 
     config() {
         return {
+            ...super.config(),
             interval: this.interval,
             url: this.url,
             method: this.method,
@@ -212,8 +223,16 @@ class CronCurlDevice extends Device {
 
     start() {
         console.log('start')
-        this.timer = setInterval(() => {
-            this.fetch();
+        this.timer = setInterval(async () => {
+            try {
+                const response = await fetch(this.url, {
+                    method: this.method,
+                });
+                const text = await response.text();
+                this.result = text;
+            } catch (e) {
+                this.result = e.message;
+            }
         }, this.interval * 1000);
     }
 
@@ -222,30 +241,19 @@ class CronCurlDevice extends Device {
         clearInterval(this.timer);
     }
 
-    async fetch() {
-        try {
-            const response = await fetch(this.url, {
-                method: this.method,
-            });
-            const text = await response.text();
-            this.result = text;
-        } catch (e) {
-            this.result = e.message;
-        }
-    }
-
     remove() {
         this.stop();
     }
 }
 
+const deviceClasses = {};
+deviceClasses[RandomGeneratorDevice.type] = RandomGeneratorDevice;
+deviceClasses[CounterDevice.type] = CounterDevice;
+deviceClasses[PostItDevice.type] = PostItDevice;
+deviceClasses[ImageViewerDevice.type] = ImageViewerDevice;
+deviceClasses[ValueMonitorDevice.type] = ValueMonitorDevice;
+deviceClasses[CronCurlDevice.type] = CronCurlDevice;
+
 module.exports = {
-    deviceClasses: {
-        'random-generator': RandomGeneratorDevice,
-        'counter': CounterDevice,
-        'post-it': PostItDevice,
-        'image-viewer': ImageViewerDevice,
-        'value-monitor': ValueMonitorDevice,
-        'cron-curl': CronCurlDevice,
-    }
+    deviceClasses,
 };
