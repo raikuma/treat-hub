@@ -1,3 +1,5 @@
+const { execSync } = require('child_process');
+
 const { v4: uuidv4 } = require('uuid');
 
 class Device {
@@ -246,6 +248,30 @@ class CronCurlDevice extends Device {
     }
 }
 
+class CpuMonitorDevice extends Device {
+    static type = 'cpu-monitor';
+    static defaultName = 'CPU Monitor';
+
+    constructor(config) {
+        super(config);
+        this.result = '';
+    }
+
+    config() {
+        return {
+            ...super.config(),
+        };
+    }
+
+    status() {
+        this.result = execSync('top -bn1 | grep load | awk \'{printf "%.2f", $(NF-2)}\'').toString();
+        return {
+            ...super.status(),
+            result: this.result,
+        };
+    }
+}
+
 const deviceClasses = {};
 deviceClasses[RandomGeneratorDevice.type] = RandomGeneratorDevice;
 deviceClasses[CounterDevice.type] = CounterDevice;
@@ -253,6 +279,7 @@ deviceClasses[PostItDevice.type] = PostItDevice;
 deviceClasses[ImageViewerDevice.type] = ImageViewerDevice;
 deviceClasses[ValueMonitorDevice.type] = ValueMonitorDevice;
 deviceClasses[CronCurlDevice.type] = CronCurlDevice;
+deviceClasses[CpuMonitorDevice.type] = CpuMonitorDevice;
 
 module.exports = {
     deviceClasses,

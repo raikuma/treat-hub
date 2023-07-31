@@ -5,6 +5,7 @@ var parsers = {
     'image-viewer': parseImageViewer,
     'value-monitor': parseValueMonitor,
     'cron-curl': parseCronCurl,
+    'cpu-monitor': parseCpuMonitor,
 };
 
 function parseCounter(status) {
@@ -119,4 +120,9 @@ function updateCronCurl(deviceId) {
     }, () => {
         refreshDevice(deviceId);
     });
+}
+
+function parseCpuMonitor(status) {
+    html = `<h3>result: ${status.result}</h3>`;
+    return html;
 }
