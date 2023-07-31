@@ -1,13 +1,13 @@
 const { v4: uuidv4 } = require('uuid');
 
 class Device {
-    constructor(device) {
+    constructor(config) {
         if (this.constructor === Device) {
             throw new Error('Abstract class "Device" cannot be instantiated directly.');
         }
-        device = device || {};
-        this.id = device.id || uuidv4();
-        this.name = device.name || this.constructor.defaultName || 'Device';
+        config = config || {};
+        this.id = config.id || uuidv4();
+        this.name = config.name || this.constructor.defaultName || 'Device';
         if (this.constructor.type === undefined) {
             throw new Error('Device type is not defined.');
         }
@@ -54,9 +54,9 @@ class CounterDevice extends Device {
     static type = 'counter';
     static defaultName = 'Counter';
 
-    constructor(device) {
-        super(device);
-        this.count = device.count || 0;
+    constructor(config) {
+        super(config);
+        this.count = config.count || 0;
     }
 
     config() {
@@ -86,9 +86,9 @@ class PostItDevice extends Device {
     static type = 'post-it';
     static defaultName = 'Post It';
 
-    constructor(device) {
-        super(device);
-        this.text = device.text || '';
+    constructor(config) {
+        super(config);
+        this.text = config.text || '';
     }
 
     config() {
@@ -114,9 +114,9 @@ class ImageViewerDevice extends Device {
     static type = 'image-viewer';
     static defaultName = 'Image Viewer';
 
-    constructor(device) {
-        super(device);
-        this.image = device.image || '';
+    constructor(config) {
+        super(config);
+        this.image = config.image || '';
     }
 
     config() {
@@ -142,9 +142,9 @@ class ValueMonitorDevice extends Device {
     static type = 'value-monitor';
     static defaultName = 'Value Monitor';
 
-    constructor(device) {
-        super(device)
-        this.source = device.source || '';
+    constructor(config) {
+        super(config)
+        this.source = config.source || '';
     }
 
     config() {
@@ -182,11 +182,11 @@ class CronCurlDevice extends Device {
     static type = 'cron-curl';
     static defaultName = 'Cron Curl';
 
-    constructor(device) {
-        super(device);
-        this.interval = device.interval || 10;
-        this.url = device.url || '';
-        this.method = device.method || 'GET';
+    constructor(config) {
+        super(config);
+        this.interval = config.interval || 10;
+        this.url = config.url || '';
+        this.method = config.method || 'GET';
         this.result = '';
 
         this.timer = null;
