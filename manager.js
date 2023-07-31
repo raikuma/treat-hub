@@ -33,6 +33,7 @@ class Manager {
     }
 
     addDevice(type, config) {
+        console.log('[Manager] Adding device', type, config);
         const DeviceClass = deviceClasses[type];
         if (DeviceClass) {
             this.devices.push(new DeviceClass(config));
@@ -65,7 +66,7 @@ class Manager {
     getDeviceStatus(id) {
         const device = this.devices.find((device) => device.id === id);
         if (device) {
-            return device.status();
+            return device.status(this.devices);
         }
         return null;
     }
